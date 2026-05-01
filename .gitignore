@@ -1,0 +1,6 @@
+# Large video files
+*.mov
+
+# Reference images (not needed in production)
+*reference*.png
+*Reference*.png

@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amore & Jacob</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        /* ========== RESET & BASE ========== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #0a0a0a;
+            --off-white: #f5f0eb;
+            --cherry: #5C0A0A;
+            --cherry-bright: #7A1018;
+            --grain-opacity: 0.04;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--off-white);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========== FILM GRAIN OVERLAY ========== */
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            opacity: var(--grain-opacity);
+            pointer-events: none;
+            z-index: 9999;
+            animation: grain 0.5s steps(1) infinite;
+        }
+
+        @keyframes grain {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-2%, -3%); }
+            20% { transform: translate(3%, 1%); }
+            30% { transform: translate(-1%, 2%); }
+            40% { transform: translate(2%, -2%); }
+            50% { transform: translate(-3%, 3%); }
+            60% { transform: translate(1%, -1%); }
+            70% { transform: translate(-2%, 2%); }
+            80% { transform: translate(3%, -3%); }
+            90% { transform: translate(-1%, 1%); }
+            100% { transform: translate(0, 0); }
+        }
+
+        ::selection {
+            background: var(--cherry);
+            color: var(--off-white);
+        }
+
+        /* ========== NAVIGATION ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: transparent;
+            transition: background 0.4s ease, backdrop-filter 0.4s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.6rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--off-white);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+            position: absolute;
+        }
+
+        .nav-link:hover {
+            opacity: 0.5;
+        }
+
+        .nav-link--left {
+            left: 3rem;
+        }
+
+        .nav-link--right {
+            right: 3rem;
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--off-white);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: var(--black);
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--black);
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(30, 30, 30, 0.2) 0%, var(--black) 75%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 8vw, 7rem);
+            letter-spacing: 0.04em;
+            color: var(--off-white);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1.5s ease 0.5s forwards;
+        }
+
+        .hero-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 0.75rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 235, 0.4);
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 1.5s ease 1s forwards;
+        }
+
+        .hero-line {
+            width: 40px;
+            height: 1px;
+            background: var(--cherry);
+            margin: 2rem auto 0;
+            opacity: 0;
+            animation: fadeUp 1.5s ease 1.3s forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== FULL-BLEED ARTIST PORTRAIT (Bedouin's Daughter style) ========== */
+        .artist-portrait {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .artist-portrait-img {
+            position: absolute;
+            inset: -10%;
+            width: 120%;
+            height: 120%;
+            object-fit: cover;
+            object-position: center 20%;
+            filter: grayscale(100%) contrast(1.15) brightness(0.9);
+            transition: transform 1.2s cubic-bezier(0.25, 0, 0.25, 1), filter 1.2s ease;
+        }
+
+        .artist-portrait:hover .artist-portrait-img {
+            transform: scale(1.03);
+        }
+
+        /* Heavy grain overlay for specific portraits */
+        .portrait-grain {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.18;
+            mix-blend-mode: overlay;
+            animation: grainShift 0.4s steps(1) infinite;
+        }
+
+        .artist-portrait--heavy-grain .artist-portrait-img {
+            filter: grayscale(100%) contrast(1.25) brightness(0.85);
+        }
+
+        @keyframes grainShift {
+            0% { transform: translate(0, 0) scale(1.1); }
+            20% { transform: translate(-3%, 2%) scale(1.1); }
+            40% { transform: translate(2%, -3%) scale(1.1); }
+            60% { transform: translate(-1%, 3%) scale(1.1); }
+            80% { transform: translate(3%, -1%) scale(1.1); }
+            100% { transform: translate(0, 0) scale(1.1); }
+        }
+
+        .artist-portrait-placeholder {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #151515 0%, #0a0a0a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .artist-portrait-placeholder span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: rgba(245, 240, 235, 0.12);
+        }
+
+        /* Gradient overlay for text readability */
+        .artist-portrait-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                transparent 30%,
+                rgba(10, 10, 10, 0.2) 60%,
+                rgba(10, 10, 10, 0.7) 85%,
+                rgba(10, 10, 10, 0.9) 100%
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Massive name overlay — bedouin's daughter style */
+        .artist-portrait-name {
+            position: absolute;
+            bottom: 3vw;
+            left: 0;
+            width: 100%;
+            z-index: 2;
+            padding: 0 3vw;
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: clamp(4rem, 12vw, 13rem);
+            line-height: 0.9;
+            color: var(--cherry-bright);
+            text-transform: lowercase;
+            pointer-events: none;
+        }
+
+        /* Bio overlay — appears on hover */
+        .artist-portrait-bio {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            background: rgba(10, 10, 10, 0.92);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.6s ease 0s;
+            pointer-events: none;
+        }
+
+        .artist-portrait:hover .artist-portrait-bio {
+            opacity: 1;
+            pointer-events: auto;
+            transition-delay: 1s;
+        }
+
+        .artist-portrait-bio h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-style: italic;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: var(--cherry-bright);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.03em;
+        }
+
+        .artist-portrait-bio .bio-line {
+            width: 40px;
+            height: 1px;
+            background: var(--cherry);
+            margin-bottom: 2rem;
+        }
+
+        .artist-portrait-bio p {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: clamp(0.85rem, 1.2vw, 1rem);
+            line-height: 2;
+            color: rgba(245, 240, 235, 0.7);
+            max-width: 500px;
+        }
+
+        .artist-portrait-bio .bio-role {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 235, 0.35);
+            margin-top: 2.5rem;
+        }
+
+        /* ========== VIDEO REEL SECTION ========== */
+        .reel-section {
+            position: relative;
+            width: 100%;
+            padding: 10rem 0;
+            background: var(--black);
+            overflow: hidden;
+        }
+
+        .reel-heading {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .reel-heading h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            color: var(--off-white);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .reel-heading h2.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .reel-heading .reel-line {
+            width: 40px;
+            height: 1px;
+            background: var(--cherry);
+            margin: 1.5rem auto 0;
+        }
+
+        /* Horizontal scrolling film strip */
+        .reel-track-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Film strip edges (sprocket holes) */
+        .reel-track-wrapper::before,
+        .reel-track-wrapper::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(245, 240, 235, 0.06) 0px,
+                rgba(245, 240, 235, 0.06) 12px,
+                transparent 12px,
+                transparent 24px
+            );
+            z-index: 2;
+        }
+
+        .reel-track-wrapper::before { top: 0; }
+        .reel-track-wrapper::after { bottom: 0; }
+
+        .reel-track {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2rem 0;
+            animation: scrollReel 30s linear infinite;
+            width: max-content;
+        }
+
+        .reel-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollReel {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .reel-frame {
+            flex-shrink: 0;
+            width: 320px;
+            height: 420px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(245, 240, 235, 0.06);
+        }
+
+        .reel-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(40%) contrast(1.1);
+        }
+
+        .reel-frame-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #141414 0%, #0d0d0d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reel-frame-placeholder span {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.85rem;
+            color: rgba(245, 240, 235, 0.08);
+        }
+
+        /* Side fade */
+        .reel-fade-left,
+        .reel-fade-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 120px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .reel-fade-left {
+            left: 0;
+            background: linear-gradient(90deg, var(--black) 0%, transparent 100%);
+        }
+
+        .reel-fade-right {
+            right: 0;
+            background: linear-gradient(-90deg, var(--black) 0%, transparent 100%);
+        }
+
+        /* ========== FEATURED VIDEO (main reel) ========== */
+        .featured-video {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: var(--black);
+        }
+
+        .featured-video-inner {
+            position: relative;
+            width: 85%;
+            max-width: 1100px;
+            margin: 0 auto;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+        }
+
+        .featured-video video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%) contrast(1.05);
+        }
+
+        .featured-video-border {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(245, 240, 235, 0.08);
+            pointer-events: none;
+        }
+
+        .featured-video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(10, 10, 10, 0.3) 0%,
+                transparent 20%,
+                transparent 80%,
+                rgba(10, 10, 10, 0.3) 100%
+            );
+            pointer-events: none;
+        }
+
+        /* ========== DIVIDER ========== */
+        .divider {
+            width: 1px;
+            height: 100px;
+            background: linear-gradient(180deg, transparent, rgba(245, 240, 235, 0.1), transparent);
+            margin: 0 auto;
+        }
+
+        /* ========== INQUIRY SECTION ========== */
+        .inquiry {
+            padding: 10rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .inquiry h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            color: var(--off-white);
+            margin-bottom: 1rem;
+        }
+
+        .inquiry-line {
+            width: 40px;
+            height: 1px;
+            background: var(--cherry);
+            margin: 0 auto 3rem;
+        }
+
+        .inquiry form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .inquiry input,
+        .inquiry textarea {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            font-size: 1rem;
+            padding: 1.2rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(245, 240, 235, 0.12);
+            color: var(--off-white);
+            outline: none;
+            transition: border-color 0.3s ease;
+            letter-spacing: 0.02em;
+        }
+
+        .inquiry input::placeholder,
+        .inquiry textarea::placeholder {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: rgba(245, 240, 235, 0.25);
+            letter-spacing: 0.02em;
+            text-transform: lowercase;
+        }
+
+        .inquiry input:focus,
+        .inquiry textarea:focus {
+            border-bottom-color: var(--cherry);
+        }
+
+        .inquiry textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .inquiry button {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            padding: 1.2rem 3rem;
+            background: transparent;
+            border: 1px solid var(--cherry);
+            color: var(--cherry-bright);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 1rem;
+            align-self: center;
+        }
+
+        .inquiry button:hover {
+            background: var(--cherry);
+            color: var(--off-white);
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(245, 240, 235, 0.05);
+        }
+
+        footer p {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 235, 0.2);
+        }
+
+        /* ========== SCROLL ANIMATIONS ========== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Parallax name animation */
+        .artist-portrait-name {
+            transition: transform 0.1s linear;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .nav-inner {
+                padding: 1.2rem 1.5rem;
+            }
+
+            .nav-link {
+                font-size: 0.6rem;
+            }
+
+            .nav-link--left { left: 1.5rem; }
+            .nav-link--right { right: 1.5rem; }
+
+            .nav-logo {
+                font-size: 0.85rem;
+            }
+
+            .artist-portrait-name {
+                font-size: clamp(3.5rem, 14vw, 6rem);
+                padding: 0 1.5rem;
+            }
+
+            .artist-portrait-bio {
+                padding: 2.5rem;
+            }
+
+            .artist-portrait-bio p {
+                font-size: 0.85rem;
+                line-height: 1.8;
+            }
+
+            .reel-frame {
+                width: 240px;
+                height: 320px;
+            }
+
+            .featured-video-inner {
+                width: 95%;
+            }
+
+            .inquiry {
+                padding: 6rem 1.5rem;
+            }
+
+            .reel-section {
+                padding: 6rem 0;
+            }
+
+            /* Tap to toggle bio on mobile */
+            .artist-portrait.bio-active .artist-portrait-bio {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .artist-portrait-name {
+                font-size: 3.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#artists" class="nav-link nav-link--left">About</a>
+            <a href="#" class="nav-logo">Amore &amp; Jacob</a>
+            <a href="#inquiry" class="nav-link nav-link--right">Contact</a>
+        </div>
+    </nav>
+
+    <!-- ========== HERO ========== -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <!-- Replace with duo image: <img src="duo.jpg" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.1);"> -->
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">Amore &amp; Jacob</h1>
+            <p class="hero-subtitle">Jazz Duo</p>
+            <div class="hero-line"></div>
+        </div>
+    </section>
+
+    <!-- ========== ADELINE AMORE — Full Bleed Portrait ========== -->
+    <section class="artist-portrait artist-portrait--heavy-grain reveal" id="artists" onclick="this.classList.toggle('bio-active')">
+        <img
+            src="Adeline Profil.png"
+            alt="Adeline Amore"
+            class="artist-portrait-img"
+        >
+        <div class="portrait-grain"></div>
+        <div class="artist-portrait-overlay"></div>
+        <div class="artist-portrait-name" data-parallax>adeline<br>amore</div>
+        <div class="artist-portrait-bio">
+            <h3>Adeline Amore</h3>
+            <div class="bio-line"></div>
+            <p>From classical pianist to vocalist, music has always been in her blood. Adeline Amore made her jazz singing debut in Heidelberg in 2024 and has since established herself with angelic, soothing vocals that belong to another era. A captivating performer who channels the spirit of the great jazz vocalists, she weaves through standards and original compositions with a presence that silences rooms and stirs souls.</p>
+            <span class="bio-role">Vocals</span>
+        </div>
+    </section>
+
+    <!-- ========== SPACER BETWEEN PORTRAITS ========== -->
+    <div class="divider"></div>
+
+    <!-- ========== PIERRE JACOB — Full Bleed Portrait ========== -->
+    <section class="artist-portrait reveal" onclick="this.classList.toggle('bio-active')">
+        <img
+            src="Pierre profile.png"
+            alt="Pierre Jacob"
+            class="artist-portrait-img"
+        >
+        <div class="artist-portrait-overlay"></div>
+        <div class="artist-portrait-name" data-parallax>pierre<br>jacob</div>
+        <div class="artist-portrait-bio">
+            <h3>Pierre Jacob</h3>
+            <div class="bio-line"></div>
+            <p>A jazz pianist of rare sensitivity and precision, Pierre Jacob is the regular house pianist at Cave 54 in Heidelberg — Germany's oldest jazz cellar, where legends like Louis Armstrong and Ella Fitzgerald once jammed. He brings warmth and depth to every note, his playing both technically brilliant and deeply emotional — the perfect counterpart to Adeline's voice, creating the dialogue that defines the duo's signature sound.</p>
+            <span class="bio-role">Instrumentalist</span>
+        </div>
+    </section>
+
+    <!-- ========== DIVIDER ========== -->
+    <div class="divider"></div>
+
+    <!-- ========== VIDEO REEL — Animated Film Strip ========== -->
+    <section class="reel-section">
+        <div class="reel-heading">
+            <h2 class="reveal">Performances</h2>
+            <div class="reel-line"></div>
+        </div>
+
+        <!-- Horizontal scrolling film strip -->
+        <div class="reel-track-wrapper">
+            <div class="reel-fade-left"></div>
+            <div class="reel-fade-right"></div>
+            <div class="reel-track" id="reelTrack">
+                <!-- Set 1 -->
+                <div class="reel-frame">
+                    <video autoplay muted loop playsinline>
+                        <source src="Video Reel Reference.mov" type="video/quicktime">
+                        <source src="Video Reel Reference.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 02</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 03</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 04</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 05</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 06</span></div>
+                </div>
+                <!-- Duplicate set for seamless loop -->
+                <div class="reel-frame">
+                    <video autoplay muted loop playsinline>
+                        <source src="Video Reel Reference.mov" type="video/quicktime">
+                        <source src="Video Reel Reference.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 02</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 03</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 04</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 05</span></div>
+                </div>
+                <div class="reel-frame">
+                    <div class="reel-frame-placeholder"><span>Reel 06</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DIVIDER ========== -->
+    <div class="divider"></div>
+
+    <!-- ========== INQUIRY ========== -->
+    <section class="inquiry" id="inquiry">
+        <h2 class="reveal">Inquire for Availability</h2>
+        <div class="inquiry-line reveal"></div>
+        <form class="reveal" onsubmit="handleSubmit(event)">
+            <input type="email" name="email" placeholder="your email" required>
+            <textarea name="message" placeholder="your message" rows="4" required></textarea>
+            <button type="submit">Send Inquiry</button>
+        </form>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+        <p>&copy; 2026 Amore &amp; Jacob. All rights reserved.</p>
+    </footer>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script>
+        // ---- Scroll reveal ----
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // ---- Navbar scroll state ----
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // ---- Parallax on artist names ----
+        const parallaxNames = document.querySelectorAll('[data-parallax]');
+        window.addEventListener('scroll', () => {
+            parallaxNames.forEach(name => {
+                const section = name.closest('.artist-portrait');
+                const rect = section.getBoundingClientRect();
+                const viewH = window.innerHeight;
+
+                if (rect.top < viewH && rect.bottom > 0) {
+                    const progress = (viewH - rect.top) / (viewH + rect.height);
+                    const offset = (progress - 0.5) * 60;
+                    name.style.transform = `translateY(${offset}px)`;
+                }
+            });
+        });
+
+        // ---- Form handler ----
+        function handleSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const email = form.email.value;
+            const message = form.message.value;
+            const subject = encodeURIComponent('Inquiry — Amore & Jacob');
+            const body = encodeURIComponent(`From: ${email}\n\n${message}`);
+            window.location.href = `mailto:info@amoreandjacob.com?subject=${subject}&body=${body}`;
+            form.reset();
+        }
+    </script>
+
+</body>
+</html>
