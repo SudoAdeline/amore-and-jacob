@@ -1000,22 +1000,30 @@
             });
         });
 
-        // ---- Mobile: auto-show bios after scrolling into view ----
+        // ---- Mobile: auto-show bios one at a time after dwelling on each ----
         if (window.innerWidth <= 768) {
             const portraits = document.querySelectorAll('.artist-portrait');
-            const bioObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.classList.add('bio-active');
-                        }, 3000);
-                        // Once triggered, stop observing
-                        bioObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
+            portraits.forEach(portrait => {
+                let timer = null;
 
-            portraits.forEach(p => bioObserver.observe(p));
+                const bioObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // Start 4s timer when portrait is in view
+                            timer = setTimeout(() => {
+                                entry.target.classList.add('bio-active');
+                                bioObserver.unobserve(entry.target);
+                            }, 4000);
+                        } else {
+                            // If they scroll away before 4s, cancel and reset
+                            clearTimeout(timer);
+                            entry.target.classList.remove('bio-active');
+                        }
+                    });
+                }, { threshold: 0.6 });
+
+                bioObserver.observe(portrait);
+            });
         }
 
         // ---- Form handler ----
