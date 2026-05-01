@@ -1000,6 +1000,24 @@
             });
         });
 
+        // ---- Mobile: auto-show bios after scrolling into view ----
+        if (window.innerWidth <= 768) {
+            const portraits = document.querySelectorAll('.artist-portrait');
+            const bioObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('bio-active');
+                        }, 3000);
+                        // Once triggered, stop observing
+                        bioObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            portraits.forEach(p => bioObserver.observe(p));
+        }
+
         // ---- Form handler ----
         function handleSubmit(e) {
             e.preventDefault();
