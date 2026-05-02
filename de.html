@@ -916,9 +916,11 @@
     <!-- ========== INQUIRY ========== -->
     <section class="inquiry" id="inquiry">
         <h2 class="reveal">Verfügbarkeit anfragen</h2>
-        <form class="reveal" onsubmit="handleSubmit(event)">
+        <form class="reveal" id="inquiryForm" action="https://formspree.io/f/mvzlgeov" method="POST">
             <input type="email" name="email" placeholder="ihre e-mail" required>
             <textarea name="message" placeholder="ihre nachricht" rows="4" required></textarea>
+            <input type="hidden" name="_subject" value="Anfrage — Amore & Jacob">
+            <input type="hidden" name="_next" value="https://amorejacob.com/de.html#inquiry">
             <label class="consent-label">
                 <input type="checkbox" name="privacy" required>
                 <span>Ich stimme der <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a> zu und willige in die Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage ein.</span>
@@ -1027,17 +1029,6 @@
             });
         }
 
-        // ---- Form handler ----
-        function handleSubmit(e) {
-            e.preventDefault();
-            const form = e.target;
-            const email = form.email.value;
-            const message = form.message.value;
-            const subject = encodeURIComponent('Inquiry — Amore & Jacob');
-            const body = encodeURIComponent(`From: ${email}\n\n${message}`);
-            window.location.href = `mailto:pierrej.film@gmail.com?subject=${subject}&body=${body}`;
-            form.reset();
-        }
     </script>
 
 </body>
